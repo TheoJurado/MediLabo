@@ -1,0 +1,6 @@
+@MediLabo_HostAddress = http://localhost:5038
+
+GET {{MediLabo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
