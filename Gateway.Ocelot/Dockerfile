@@ -11,17 +11,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MediLabo/MediLabo.csproj", "MediLabo/"]
-RUN dotnet restore "./MediLabo/MediLabo.csproj"
+COPY ["Gateway.Ocelot/Gateway.Ocelot.csproj", "Gateway.Ocelot/"]
+RUN dotnet restore "./Gateway.Ocelot/Gateway.Ocelot.csproj"
 COPY . .
-WORKDIR "/src/MediLabo"
-RUN dotnet build "./MediLabo.csproj" -c %BUILD_CONFIGURATION% -o /app/build
+WORKDIR "/src/Gateway.Ocelot"
+RUN dotnet build "./Gateway.Ocelot.csproj" -c %BUILD_CONFIGURATION% -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./MediLabo.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Gateway.Ocelot.csproj" -c %BUILD_CONFIGURATION% -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MediLabo.dll"]
+ENTRYPOINT ["dotnet", "Gateway.Ocelot.dll"]
