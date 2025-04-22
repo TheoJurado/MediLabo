@@ -31,6 +31,11 @@ namespace MediLabo
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    SeedData.Initialize(services);
+                }
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
