@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MediLabo.Models;
 
 namespace MediLabo.Data
 {
@@ -15,7 +16,7 @@ namespace MediLabo.Data
             }
 
             context.Utilisateurs.AddRange(
-                new Utilisateurs
+                new Users
                 {
 
                 }
