@@ -9,6 +9,22 @@ namespace MediLabo.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
 
-        public DbSet<Patient> Utilisateurs { get; set; }
+        public DbSet<Patient> Patient { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Note> Notes { get; set; }
+
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Relation Patient -> Note (0..1 : 1..1)
+            modelBuilder.Entity<Note>()
+                .HasOne(n => n.Patient)
+                .WithMany(p => p.Notes)
+                .HasForeignKey(n => n.PatientId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

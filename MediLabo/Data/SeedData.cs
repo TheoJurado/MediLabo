@@ -9,7 +9,9 @@ namespace MediLabo.Data
         {
             using var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
-            
+
+
+            //return;
             if (context.Utilisateurs.Any())
             {
                 return;
