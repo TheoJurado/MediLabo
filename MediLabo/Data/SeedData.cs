@@ -12,12 +12,12 @@ namespace MediLabo.Data
 
 
             //return;
-            if (context.Utilisateurs.Any())
+            if (context.Patient.Any())
             {
                 return;
             }
 
-            context.Utilisateurs.AddRange(
+            context.Patient.AddRange(
                 new Patient
                 {
                     Name = "TestNone",
