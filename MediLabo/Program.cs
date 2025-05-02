@@ -5,6 +5,8 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using MediLabo.Data;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
+using MediLabo.Models;
 
 namespace MediLabo
 {
@@ -19,9 +21,13 @@ namespace MediLabo
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // add MongoDB
+            builder.Services.Configure<MongoDbSettings>(
+            builder.Configuration.GetSection("MongoDbSettings"));
+            builder.Services.AddSingleton<IMongoClient>(s =>
+            new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
+            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 
             builder.Services.AddEndpointsApiExplorer();
@@ -31,11 +37,6 @@ namespace MediLabo
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                using (var scope = app.Services.CreateScope())
-                {
-                    var services = scope.ServiceProvider;
-                    SeedData.Initialize(services);
-                }
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }

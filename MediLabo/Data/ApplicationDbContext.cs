@@ -14,7 +14,7 @@ namespace MediLabo.Data
         public DbSet<Note> Notes { get; set; }
 
 
-
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -24,7 +24,7 @@ namespace MediLabo.Data
                 .HasOne(n => n.Patient)
                 .WithMany(p => p.Notes)
                 .HasForeignKey(n => n.PatientId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

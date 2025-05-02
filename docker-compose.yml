@@ -1,23 +1,15 @@
 version: '3.8'
 
 services:
-  sqlserver:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: sqlserver
-    environment:
-      - SA_PASSWORD=Strong!Passw0rd
-      - ACCEPT_EULA=Y
+  mongodb:
+    image: mongo
+    container_name: mongodb
     ports:
-      - "1433:1433"
+      - "27017:27017"
     networks:
       - backend
-    healthcheck:
-      test: ["CMD-SHELL", "sqlcmd -S localhost -U sa -P Strong!Passw0rd -Q 'SELECT 1'"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-    #command: >
-      #bash -c " /opt/mssql/bin/sqlservr & sleep 30 && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Strong!Passw0rd -Q 'CREATE DATABASE Medilabo' && wait"
+    volumes:
+      - mongo_data:/data/db
 
   medilabo.api:
     build:
@@ -50,6 +42,9 @@ services:
       - medilabo.api
     networks:
       - backend
+      
+volumes:
+  mongo_data:
 
 networks:
   backend:

@@ -4,5 +4,6 @@ namespace MediLabo.Models
 {
     public class Doctor : IdentityUser
     {
+
     }
 }
