@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MediLabo.Data
 {
-    public class ApplicationDbContext : DbContext//IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) { }
 
-        public DbSet<Patient> Patient { get; set; }
+        //public DbSet<Patient> Patient { get; set; }
         public DbSet<Doctor> Doctors { get; set; }
-        public DbSet<Note> Notes { get; set; }
+        //public DbSet<Note> Notes { get; set; }
 
 
-        
+        /*
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -25,6 +25,6 @@ namespace MediLabo.Data
                 .WithMany(p => p.Notes)
                 .HasForeignKey(n => n.PatientId)
                 .OnDelete(DeleteBehavior.Cascade);
-        }
+        }*/
     }
 }

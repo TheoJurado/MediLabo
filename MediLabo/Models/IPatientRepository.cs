@@ -4,11 +4,11 @@ namespace MediLabo.Models
 {
     public interface IPatientRepository
     {
-        public IEnumerable<Patient> GetAllPatient();
+        public Task<IEnumerable<Patient>> GetAllPatientAsync();
 
-        public Patient GetPatientById(int id);
+        public Task<Patient> GetPatientByIdAsync(int id);
 
-        public IEnumerable<Note> GetAllNotesFromPatientByHisId(int id);
+        public Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(int id);
 
 
 

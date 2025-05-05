@@ -1,10 +1,15 @@
-﻿namespace MediLabo.Models
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+
+namespace MediLabo.Models
 {
     public class Note
     {
-        int Id { get; set; }
-        string Comment { get; set; } = string.Empty;
-        DateOnly Date { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public int Id { get; set; }
+        public string Comment { get; set; } = string.Empty;
+        public DateOnly Date { get; set; }
 
         public int? PatientId { get; set; }
         public Patient? Patient { get; set; }

@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  sqlserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlserver
+    container_name: sqlserver
+    environment:
+      - SA_PASSWORD=Strong!Passw0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Strong!Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   mongodb:
     image: mongo
     container_name: mongodb

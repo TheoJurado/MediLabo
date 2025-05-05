@@ -21,22 +21,21 @@ namespace MediLabo.Models
         }
 
 
-        public IEnumerable<Patient> GetAllPatient() 
+        public async Task<IEnumerable<Patient>> GetAllPatientAsync() 
         {
-            IEnumerable<Patient> allPatient = _context.Patient.Where(p => p.Id > 0);
+            var allPatients = await _patients.Find(p => true).ToListAsync();
 
-            return allPatient.ToList();
+            return allPatients;
         }
 
-        public Patient GetPatientById(int id) 
+        public async Task<Patient> GetPatientByIdAsync(int id) 
         {
-            List<Patient> Patients = GetAllPatient().ToList();
-            return Patients.Find(p => p.Id == id);
+            return await _patients.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public IEnumerable<Note> GetAllNotesFromPatientByHisId(int id)
+        public async Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(int id)
         {
-            Patient patient = GetPatientById(id);
+            Patient patient = await GetPatientByIdAsync(id);
             return patient.Notes;
         }
 
@@ -44,25 +43,24 @@ namespace MediLabo.Models
 
         public void AddPatient(Patient patient)
         {
-            _context.Patient.Add(patient);
-            _context.SaveChanges();
+            _patients.InsertOne(patient);
         }
         public void DeletePatient(Patient patient) 
         {
-            _context.Remove(patient);
-            _context.SaveChanges();
+            _patients.DeleteOne(p => p.Id == patient.Id);
         }
 
         public void AddNoteToPatient(Note note,Patient patient)
         {
-            patient.Notes.Add(note);
-            _context.SaveChanges();
+            var update = Builders<Patient>.Update.Push(p => p.Notes, note);
+            _patients.UpdateOne(p => p.Id == patient.Id, update);
         }
 
         public void DeleteNote(Note note)
         {
-            _context.Remove(note);
-            _context.SaveChanges();
+            var filter = Builders<Patient>.Filter.ElemMatch(p => p.Notes, n => n.Id == note.Id);
+            var update = Builders<Patient>.Update.PullFilter(p => p.Notes, n => n.Id == note.Id);
+            _patients.UpdateOne(filter, update);
         }
     }
 }

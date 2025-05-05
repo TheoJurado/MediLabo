@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace MediLabo.Models
 {
     public class Patient
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;

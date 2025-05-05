@@ -22,11 +22,15 @@ namespace MediLabo
 
             builder.Services.AddControllers();
 
+            //add SQL
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
             // add MongoDB
             builder.Services.Configure<MongoDbSettings>(
             builder.Configuration.GetSection("MongoDbSettings"));
             builder.Services.AddSingleton<IMongoClient>(s =>
-            new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
+                new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
 
@@ -37,6 +41,11 @@ namespace MediLabo
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    SeedData.Initialize(services);
+                }
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
