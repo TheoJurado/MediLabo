@@ -16,6 +16,7 @@ namespace MediLabo.Models
         }*/
         public PatientRepository(IOptions<MongoDbSettings> settings, IMongoClient client)
         {
+            //var client = new MongoClient(settings.Value.ConnectionString);
             var database = client.GetDatabase(settings.Value.DatabaseName);
             _patients = database.GetCollection<Patient>("Patients");
         }
@@ -28,12 +29,12 @@ namespace MediLabo.Models
             return allPatients;
         }
 
-        public async Task<Patient> GetPatientByIdAsync(int id) 
+        public async Task<Patient> GetPatientByIdAsync(string id) 
         {
             return await _patients.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(int id)
+        public async Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(string id)
         {
             Patient patient = await GetPatientByIdAsync(id);
             return patient.Notes;

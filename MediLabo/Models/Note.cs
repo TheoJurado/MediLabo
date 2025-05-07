@@ -7,7 +7,7 @@ namespace MediLabo.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int Id { get; set; }
+        public string? Id { get; set; }
         public string Comment { get; set; } = string.Empty;
         public DateOnly Date { get; set; }
 

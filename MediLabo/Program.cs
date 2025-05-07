@@ -7,6 +7,7 @@ using MediLabo.Data;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using MediLabo.Models;
+using Microsoft.OpenApi.Models;
 
 namespace MediLabo
 {
@@ -16,10 +17,6 @@ namespace MediLabo
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
             builder.Services.AddControllers();
 
             //add SQL
@@ -28,7 +25,7 @@ namespace MediLabo
 
             // add MongoDB
             builder.Services.Configure<MongoDbSettings>(
-            builder.Configuration.GetSection("MongoDbSettings"));
+                builder.Configuration.GetSection("MongoDbSettings"));
             builder.Services.AddSingleton<IMongoClient>(s =>
                 new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
@@ -36,15 +33,20 @@ namespace MediLabo
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            Console.WriteLine($"Environnement actuel : {app.Environment.EnvironmentName}");
             if (app.Environment.IsDevelopment())
             {
                 using (var scope = app.Services.CreateScope())
                 {
-                    var services = scope.ServiceProvider;
-                    SeedData.Initialize(services);
+                    var mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
+                    var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
+                    var database = mongoClient.GetDatabase(mongoDbSettings.DatabaseName);
+
+                    SeedData.Initialize(database);
                 }
                 app.UseSwagger();
                 app.UseSwaggerUI();

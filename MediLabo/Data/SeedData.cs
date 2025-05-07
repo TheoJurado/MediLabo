@@ -1,23 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MediLabo.Models;
+using MongoDB.Driver;
 
 namespace MediLabo.Data
 {
     public class SeedData
     {
-        public static void Initialize(IServiceProvider serviceProvider)
+        public static void Initialize(IMongoDatabase database)
         {
-            using var context = new ApplicationDbContext(
-                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
-
-            /*
-            //return;
-            if (context.Patient.Any())
+            Console.WriteLine("SeedData: Démarrage de l'initialisation des patients");
+            var patientCollection = database.GetCollection<Patient>("Patients");
+            
+            // Vérifie s'il existe déjà des patients
+            if (patientCollection.Find(_ => true).Any())
             {
                 return;
             }
 
-            context.Patient.AddRange(
+            var patients = new List<Patient>
+            {
                 new Patient
                 {
                     Name = "TestNone",
@@ -54,8 +55,8 @@ namespace MediLabo.Data
                     Adress = "4 Valley Dr",
                     Phone = "400-555-6666"
                 }
-            );
-            context.SaveChanges();/**/
+            };
+            patientCollection.InsertMany(patients);/**/
         }
     }
 }

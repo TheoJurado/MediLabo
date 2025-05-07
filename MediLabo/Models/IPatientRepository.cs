@@ -6,9 +6,9 @@ namespace MediLabo.Models
     {
         public Task<IEnumerable<Patient>> GetAllPatientAsync();
 
-        public Task<Patient> GetPatientByIdAsync(int id);
+        public Task<Patient> GetPatientByIdAsync(string id);
 
-        public Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(int id);
+        public Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(string id);
 
 
 
