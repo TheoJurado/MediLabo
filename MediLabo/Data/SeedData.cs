@@ -1,62 +1,91 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MediLabo.Models;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Data;
+using System.Numerics;
 
 namespace MediLabo.Data
 {
     public class SeedData
     {
-        public static void Initialize(IMongoDatabase database)
+        public static void InitializeMongo(IMongoDatabase database)
         {
             Console.WriteLine("SeedData: Démarrage de l'initialisation des patients");
             var patientCollection = database.GetCollection<Patient>("Patients");
-            
-            // Vérifie s'il existe déjà des patients
-            if (patientCollection.Find(_ => true).Any())
-            {
-                return;
-            }
 
-            var patients = new List<Patient>
+            if (!patientCollection.Find(_ => true).Any())
             {
-                new Patient
+                var patients = new List<Patient>
                 {
-                    Name = "TestNone",
-                    FirstName = "Test",
-                    BirthDay = new DateTime(1966, 12, 31),
-                    Gender = GenderType.Woman,
-                    Adress = "1 Brookside St",
-                    Phone = "100-222-3333"
-                },
-                new Patient
+                    new Patient
+                    {
+                        Name = "TestNone",
+                        FirstName = "Test",
+                        BirthDay = new DateTime(1966, 12, 31),
+                        Gender = GenderType.Woman,
+                        Adress = "1 Brookside St",
+                        Phone = "100-222-3333"
+                    },
+                    new Patient
+                    {
+                        Name = "TestBorderline",
+                        FirstName = "Test",
+                        BirthDay = new DateTime(1945, 06, 24),
+                        Gender = GenderType.Man,
+                        Adress = "2 High St",
+                        Phone = "200-333-4444"
+                    },
+                    new Patient
+                    {
+                        Name = "TestInDanger",
+                        FirstName = "Test",
+                        BirthDay = new DateTime(2004, 06, 18),
+                        Gender = GenderType.Man,
+                        Adress = "3 Club Road",
+                        Phone = "300-444-5555"
+                    },
+                    new Patient
+                    {
+                        Name = "TestEarlyOnset",
+                        FirstName = "Test",
+                        BirthDay = new DateTime(2002, 06, 28),
+                        Gender = GenderType.Woman,
+                        Adress = "4 Valley Dr",
+                        Phone = "400-555-6666"
+                    }
+                };
+                patientCollection.InsertMany(patients);
+            }
+        }
+
+        public static async Task InitializeSQL(IServiceProvider serviceProvider)
+        {
+            using var context = new ApplicationDbContext(
+                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
+            var doctorManager = serviceProvider.GetRequiredService<UserManager<Doctor>>();
+
+            if (!context.Doctors.Any())
+            {
+                var doc = new Doctor
                 {
-                    Name = "TestBorderline",
-                    FirstName = "Test",
-                    BirthDay = new DateTime(1945, 06, 24),
-                    Gender = GenderType.Man,
-                    Adress = "2 High St",
-                    Phone = "200-333-4444"
-                },
-                new Patient
+                    UserName = "Doc1",
+                    Email = "doc1@example.com",
+                    EmailConfirmed = true
+                };
+                var result = await doctorManager.CreateAsync(doc, "Doc1PassW0rd!");
+
+                if (!result.Succeeded)
                 {
-                    Name = "TestInDanger",
-                    FirstName = "Test",
-                    BirthDay = new DateTime(2004, 06, 18),
-                    Gender = GenderType.Man,
-                    Adress = "3 Club Road",
-                    Phone = "300-444-5555"
-                },
-                new Patient
-                {
-                    Name = "TestEarlyOnset",
-                    FirstName = "Test",
-                    BirthDay = new DateTime(2002, 06, 28),
-                    Gender = GenderType.Woman,
-                    Adress = "4 Valley Dr",
-                    Phone = "400-555-6666"
+                    // print errors
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"Error creating doctor: {error.Description}");
+                    }
                 }
-            };
-            patientCollection.InsertMany(patients);/**/
+            }
         }
     }
 }

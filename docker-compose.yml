@@ -15,6 +15,7 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Strong!Passw0rd", "-Q", "SELECT 1"]
+      # test: ["CMD-SHELL", "echo 'SELECT 1' | /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Strong!Passw0rd"]
       interval: 10s
       timeout: 5s
       retries: 10

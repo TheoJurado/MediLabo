@@ -1,6 +1,6 @@
 ﻿using MediLabo.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-//using Swashbuckle.AspNetCore.Filters;
 
 namespace MediLabo.Controllers
 {
@@ -9,10 +9,13 @@ namespace MediLabo.Controllers
     public class PatientsController : ControllerBase
     {
         private readonly IPatientRepository _patientRepository;
+        //temporaire pour check les docs >>les suivant seront anoté d'un //#
+        private readonly UserManager<Doctor> _userManager;
 
-        public PatientsController(IPatientRepository patientRepository)
+        public PatientsController(IPatientRepository patientRepository, UserManager<Doctor> userManager)
         {
             _patientRepository = patientRepository;
+            _userManager = userManager;//#
         }
 
         [HttpGet]
@@ -87,5 +90,12 @@ namespace MediLabo.Controllers
             _patientRepository.DeleteNote(note);
             return NoContent();
         }/**/
+
+        [HttpGet("all")]//#
+        public IActionResult GetAllDoctors()
+        {
+            var doctors = _userManager.Users.ToList();
+            return Ok(doctors);
+        }
     }
 }
