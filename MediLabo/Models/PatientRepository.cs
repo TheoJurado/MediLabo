@@ -1,6 +1,5 @@
 ﻿using MediLabo.Data;
 using Microsoft.Extensions.Options;
-using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 
 namespace MediLabo.Models

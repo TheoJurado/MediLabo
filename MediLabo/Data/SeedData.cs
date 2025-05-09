@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MediLabo.Models;
+﻿using MediLabo.Models;
 using MongoDB.Driver;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,31 +60,5 @@ namespace MediLabo.Data
             }
         }
 
-        public static async Task InitializeSQL(IServiceProvider serviceProvider)
-        {
-            using var context = new ApplicationDbContext(
-                serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
-            var doctorManager = serviceProvider.GetRequiredService<UserManager<Doctor>>();
-
-            if (!context.Doctors.Any())
-            {
-                var doc = new Doctor
-                {
-                    UserName = "Doc1",
-                    Email = "doc1@example.com",
-                    EmailConfirmed = true
-                };
-                var result = await doctorManager.CreateAsync(doc, "Doc1PassW0rd!");
-
-                if (!result.Succeeded)
-                {
-                    // print errors
-                    foreach (var error in result.Errors)
-                    {
-                        Console.WriteLine($"Error creating doctor: {error.Description}");
-                    }
-                }
-            }
-        }
     }
 }

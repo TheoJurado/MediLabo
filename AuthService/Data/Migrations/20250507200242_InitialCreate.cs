@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MediLabo.Data.Migrations
+namespace AuthService.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

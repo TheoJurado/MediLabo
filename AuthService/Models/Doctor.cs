@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MediLabo.Models
+namespace AuthService.Models
 {
     public class Doctor : IdentityUser
     {

@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MediLabo.Models;
+﻿using AuthService.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
-namespace MediLabo.Data
+namespace AuthService.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
@@ -10,6 +10,5 @@ namespace MediLabo.Data
             : base(options) { }
 
         public DbSet<Doctor> Doctors { get; set; }
-
     }
 }

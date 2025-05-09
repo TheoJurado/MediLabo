@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
+﻿
 namespace MediLabo.Models
 {
     public interface IPatientRepository

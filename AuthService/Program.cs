@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
-using MediLabo.Data;
-using MongoDB.Driver;
-using MediLabo.Models;
-using Microsoft.OpenApi.Models;
+using AuthService.Data;
+using AuthService.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
-namespace MediLabo
+namespace AuthService
 {
     public class Program
     {
@@ -19,13 +18,12 @@ namespace MediLabo
 
             builder.Services.AddControllers();
 
-            // add MongoDB
-            builder.Services.Configure<MongoDbSettings>(
-                builder.Configuration.GetSection("MongoDbSettings"));
-            builder.Services.AddSingleton<IMongoClient>(s =>
-                new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
-            builder.Services.AddScoped<IPatientRepository, PatientRepository>();
-
+            //add SQL
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddIdentity<Doctor, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -37,14 +35,17 @@ namespace MediLabo
             {
                 using (var scope = app.Services.CreateScope())
                 {
-                    //MongoDB part
-                    var mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
-                    var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
-                    var database = mongoClient.GetDatabase(mongoDbSettings.DatabaseName);
+                    //SQL Server part
+                    var serviceProvider = scope.ServiceProvider;
 
-                    SeedData.InitializeMongo(database);//Mongo
+                    //SQL migration
+                    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    dbContext.Database.Migrate();/**/
+
+                    await SeedData.InitializeSQL(serviceProvider);//SQL
                 }
-                app.UseSwagger();
+
+                app.UseSwagger();//
                 app.UseSwaggerUI();
             }
 
