@@ -4,6 +4,6 @@ namespace AuthService.Models
 {
     public class Doctor : IdentityUser
     {
-
+        public bool IsOrganizer { get; set; } = false;
     }
 }

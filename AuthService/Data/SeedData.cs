@@ -24,14 +24,32 @@ namespace AuthService.Data
                     Email = "doc1@example.com",
                     EmailConfirmed = true
                 };
-                var result = await doctorManager.CreateAsync(doc, "Doc1PassW0rd!");
+                var resultD = await doctorManager.CreateAsync(doc, "Doc1PassW0rd!");
 
-                if (!result.Succeeded)
+                var orga = new Doctor
+                {
+                    UserName = "Org1",
+                    Email = "org1@example.com",
+                    EmailConfirmed = true,
+                    IsOrganizer = true
+                };
+                var resultO = await doctorManager.CreateAsync(orga, "Org1PassW0rd!");
+
+
+                if (!resultD.Succeeded)
                 {
                     // print errors
-                    foreach (var error in result.Errors)
+                    foreach (var error in resultD.Errors)
                     {
                         Console.WriteLine($"Error creating doctor: {error.Description}");
+                    }
+                }
+                if (!resultO.Succeeded)
+                {
+                    // print errors
+                    foreach (var error in resultO.Errors)
+                    {
+                        Console.WriteLine($"Error creating organizer: {error.Description}");
                     }
                 }
             }
