@@ -15,7 +15,6 @@ services:
       - backend
     healthcheck:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Strong!Passw0rd", "-Q", "SELECT 1"]
-      # test: ["CMD-SHELL", "echo 'SELECT 1' | /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Strong!Passw0rd"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -47,21 +46,6 @@ services:
     networks:
       - backend
 
-  gateway.ocelot:
-    build:
-      context: ./Gateway.Ocelot
-      dockerfile: Dockerfile
-    container_name: gateway.ocelot
-    ports:
-      - "6000:8080"
-      - "6001:8081"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - medilabo.api
-    networks:
-      - backend
-
   authservice:
     build:
       context: ./AuthService
@@ -75,6 +59,33 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+    networks:
+      - backend
+
+  frontendapp:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - backend
+
+  gateway.ocelot:
+    build:
+      context: ./Gateway.Ocelot
+      dockerfile: Dockerfile
+    container_name: gateway.ocelot
+    ports:
+      - "6000:8080"
+      - "6001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - medilabo.api
     networks:
       - backend
       

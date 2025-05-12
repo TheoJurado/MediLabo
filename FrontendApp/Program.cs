@@ -9,6 +9,11 @@ namespace FrontendApp
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddHttpClient("GatewayClient", client =>
+            {
+                client.BaseAddress = new Uri("http://gateway.ocelot:8080"); // Port Gateway Ocelot
+            });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

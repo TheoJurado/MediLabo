@@ -9,11 +9,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["FrontendApp/FrontendApp.csproj", "FrontendApp/"]
-RUN dotnet restore "./FrontendApp/FrontendApp.csproj"
+COPY ["FrontendApp.csproj", "./"]
+RUN dotnet restore "./FrontendApp.csproj"
 COPY . .
-WORKDIR "/src/FrontendApp"
-RUN dotnet build "./FrontendApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "FrontendApp.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

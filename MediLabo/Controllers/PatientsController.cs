@@ -34,7 +34,6 @@ namespace MediLabo.Controllers
         }
 
         [HttpPost]
-        //[SwaggerRequestExample(typeof(Patient), typeof(PatientExample))]
         public ActionResult AddPatient([FromBody] Patient patient)
         {
             _patientRepository.AddPatient(patient);

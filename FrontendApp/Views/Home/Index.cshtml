@@ -1,8 +1,58 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@page
+@using FrontendApp.Views.Home
+@model IndexModel
+@{
+    if (ViewData == null)
+    {
+        throw new InvalidOperationException("ViewData est null au début de la vue !");
+    }
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1>Liste des Docteurs</h1>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Is Organizer</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var doctor in Model.Doctors)
+        {
+            <tr>
+                <td>@doctor.Email</td>
+                <td>@(doctor.IsOrganizer ? "Oui" : "Non")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h1>Liste des Patients</h1>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date de Naissance</th>
+            <th>Genre</th>
+            <th>Adresse</th>
+            <th>Téléphone</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in Model.Patients)
+        {
+            <tr>
+                <td>@patient.Name</td>
+                <td>@patient.FirstName</td>
+                <td>@patient.BirthDay.ToString("dd/MM/yyyy")</td>
+                <td>@patient.Gender</td>
+                <td>@patient.Adress</td>
+                <td>@patient.Phone</td>
+            </tr>
+        }
+    </tbody>
+</table>

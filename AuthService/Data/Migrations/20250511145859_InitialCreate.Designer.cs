@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthService.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250509202914_InitialCreate")]
+    [Migration("20250511145859_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -235,6 +235,9 @@ namespace AuthService.Data.Migrations
             modelBuilder.Entity("AuthService.Models.Doctor", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<bool>("IsOrganizer")
+                        .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Doctor");
                 });

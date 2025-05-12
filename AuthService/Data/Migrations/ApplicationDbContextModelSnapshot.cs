@@ -233,6 +233,9 @@ namespace AuthService.Data.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<bool>("IsOrganizer")
+                        .HasColumnType("bit");
+
                     b.HasDiscriminator().HasValue("Doctor");
                 });
 
