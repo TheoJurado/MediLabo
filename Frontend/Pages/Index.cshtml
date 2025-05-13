@@ -40,6 +40,7 @@
             <th>Genre</th>
             <th>Adresse</th>
             <th>Téléphone</th>
+            <th>Id</th>
         </tr>
     </thead>
     <tbody>
@@ -52,6 +53,26 @@
                 <td>@patient.GenderText</td>
                 <td>@patient.Adress</td>
                 <td>@patient.Phone</td>
+                <td>@patient.Id</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h1>Liste des Notes</h1>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Note</th>
+            <th>Id patient</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var note in Model.Notes)
+        {
+            <tr>
+                <td>@note.Comment</td>
+                <td>@note.PatientId</td>
             </tr>
         }
     </tbody>

@@ -10,7 +10,7 @@ namespace Frontend
             builder.Services.AddRazorPages();
             builder.Services.AddHttpClient("GatewayClient", client =>
             {
-                client.BaseAddress = new Uri("http://gateway.ocelot:8080"); // nom du service Docker + port exposé en interne
+                client.BaseAddress = new Uri("http://gateway.ocelot:8080");
             });
 
             var app = builder.Build();

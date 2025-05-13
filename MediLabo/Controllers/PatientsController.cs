@@ -52,39 +52,5 @@ namespace MediLabo.Controllers
             _patientRepository.DeletePatient(patient);
             return NoContent();
         }
-
-        [HttpGet("{id}/notes")]
-        public async Task<ActionResult<IEnumerable<Note>>> GetPatientNotes(string id)
-        {
-            var patient = await _patientRepository.GetPatientByIdAsync(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
-            var notes = await _patientRepository.GetAllNotesFromPatientByHisId(id);
-            return Ok(notes);
-        }
-
-        [HttpPost("{id}/notes")]
-        public async Task<ActionResult> AddNoteToPatient(string id, [FromBody] Note note)
-        {
-            var patient = await _patientRepository.GetPatientByIdAsync(id);
-            if (patient == null)
-            {
-                return NotFound();
-            }
-
-            _patientRepository.AddNoteToPatient(note, patient);
-            return Ok();
-        }
-
-        [HttpDelete("notes/{noteId}")]
-        public ActionResult DeleteNoteFromAnyPatient(string noteId)
-        {
-            var note = new Note { Id = noteId };
-            _patientRepository.DeleteNote(note);
-            return NoContent();
-        }/**/
     }
 }

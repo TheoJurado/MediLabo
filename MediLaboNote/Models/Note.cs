@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace MediLabo.Models
+namespace MediLaboNote.Models
 {
     public class Note
     {
@@ -9,9 +9,9 @@ namespace MediLabo.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
         public string Comment { get; set; } = string.Empty;
-        public DateOnly Date { get; set; }
+        public DateOnly? Date { get; set; }
 
-        public int? PatientId { get; set; }
-        public Patient? Patient { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string PatientId { get; set; } = string.Empty;
     }
 }

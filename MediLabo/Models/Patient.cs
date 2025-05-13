@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
 namespace MediLabo.Models
@@ -16,9 +15,6 @@ namespace MediLabo.Models
         public string GenderText => Gender.ToString();
         public string Adress { get; set; } = string.Empty;
         public string Phone { get; set; } = string.Empty;
-
-
-        public ICollection<Note> Notes { get; set; } = new List<Note>();
     }
 
     public enum GenderType

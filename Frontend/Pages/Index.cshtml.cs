@@ -14,6 +14,7 @@ namespace Frontend.Pages
 
         public List<DoctorDto> Doctors { get; set; } = new();
         public List<PatientDto> Patients { get; set; } = new();
+        public List<NoteDto> Notes { get; set; } = new();
 
         public async Task OnGetAsync()
         {
@@ -28,6 +29,14 @@ namespace Frontend.Pages
             {
                 Patients = await patientResponse.Content.ReadFromJsonAsync<List<PatientDto>>();
             }
+
+            var noteResponse = await _httpClient.GetAsync("/medilabonotes/notes");
+            if (noteResponse.IsSuccessStatusCode)
+            {
+                Notes = await noteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
+            }
+
+            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!" + patientResponse.StatusCode + "/" + noteResponse.StatusCode);
         }
 
         public class DoctorDto
@@ -44,6 +53,13 @@ namespace Frontend.Pages
             public string GenderText { get; set; }
             public string Adress { get; set; }
             public string Phone { get; set; }
+            public string Id { get; set; }
+        }
+
+        public class NoteDto
+        {
+            public string Comment { get; set; }
+            public string PatientId { get; set; }
         }
     }
 }

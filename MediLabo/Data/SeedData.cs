@@ -1,16 +1,11 @@
 ﻿using MediLabo.Models;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Data;
-using System.Numerics;
 
 namespace MediLabo.Data
 {
     public class SeedData
     {
-        public static void InitializeMongo(IMongoDatabase database)
+        public static void InitializeMongoPatient(IMongoDatabase database)
         {
             Console.WriteLine("SeedData: Démarrage de l'initialisation des patients");
             var patientCollection = database.GetCollection<Patient>("Patients");

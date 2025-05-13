@@ -35,6 +35,18 @@
       ],
       "UpstreamPathTemplate": "/medilabo/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabonote.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabonotes/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {

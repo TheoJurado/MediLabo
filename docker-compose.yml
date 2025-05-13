@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   sqlserver:
     build:
@@ -28,6 +26,11 @@ services:
       - backend
     volumes:
       - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo mongodb:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   medilabo.api:
     build:
@@ -39,12 +42,28 @@ services:
       - "5002:8081"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=Medilabo;User Id=sa;Password=Strong!Passw0rd;TrustServerCertificate=True
+      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      - MongoDbSettings__DatabaseName=MedilaboDb
     depends_on:
-      sqlserver:
+      mongodb:
         condition: service_healthy
     networks:
       - backend
+
+  #medilabonote.api:
+    #build:
+      #context: ./MediLaboNote
+      #dockerfile: Dockerfile
+    #container_name: medilabonote.api
+    #ports:
+      #- "8082:8080"
+    #environment:
+      #- ASPNETCORE_ENVIRONMENT=Development
+      #- MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      #- MongoDbSettings__DatabaseName=MedilaboDb
+    #depends_on:
+      #mongodb:
+        #condition: service_healthy
 
   authservice:
     build:

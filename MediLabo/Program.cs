@@ -42,7 +42,7 @@ namespace MediLabo
                     var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
                     var database = mongoClient.GetDatabase(mongoDbSettings.DatabaseName);
 
-                    SeedData.InitializeMongo(database);//Mongo
+                    SeedData.InitializeMongoPatient(database);//Mongo
                 }
                 app.UseSwagger();
                 app.UseSwaggerUI();

@@ -9,11 +9,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["MediLaboNote/MediLaboNote.csproj", "MediLaboNote/"]
-RUN dotnet restore "./MediLaboNote/MediLaboNote.csproj"
+COPY ["MediLaboNote.csproj", "./"]
+RUN dotnet restore "./MediLaboNote.csproj"
 COPY . .
-WORKDIR "/src/MediLaboNote"
-RUN dotnet build "./MediLaboNote.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "MediLaboNote.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release

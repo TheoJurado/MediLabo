@@ -6,16 +6,10 @@ namespace MediLabo.Models
 {
     public class PatientRepository :IPatientRepository
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IMongoCollection<Patient> _patients;
 
-        /*public PatientRepository(ApplicationDbContext context)
-        {
-            _context = context;
-        }*/
         public PatientRepository(IOptions<MongoDbSettings> settings, IMongoClient client)
         {
-            //var client = new MongoClient(settings.Value.ConnectionString);
             var database = client.GetDatabase(settings.Value.DatabaseName);
             _patients = database.GetCollection<Patient>("Patients");
         }
@@ -33,12 +27,6 @@ namespace MediLabo.Models
             return await _patients.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(string id)
-        {
-            Patient patient = await GetPatientByIdAsync(id);
-            return patient.Notes;
-        }
-
 
 
         public void AddPatient(Patient patient)
@@ -48,19 +36,6 @@ namespace MediLabo.Models
         public void DeletePatient(Patient patient) 
         {
             _patients.DeleteOne(p => p.Id == patient.Id);
-        }
-
-        public void AddNoteToPatient(Note note,Patient patient)
-        {
-            var update = Builders<Patient>.Update.Push(p => p.Notes, note);
-            _patients.UpdateOne(p => p.Id == patient.Id, update);
-        }
-
-        public void DeleteNote(Note note)
-        {
-            var filter = Builders<Patient>.Filter.ElemMatch(p => p.Notes, n => n.Id == note.Id);
-            var update = Builders<Patient>.Update.PullFilter(p => p.Notes, n => n.Id == note.Id);
-            _patients.UpdateOne(filter, update);
         }
     }
 }

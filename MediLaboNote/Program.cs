@@ -1,3 +1,6 @@
+using MediLaboNote.Data;
+using MongoDB.Driver;
+using MediLaboNote.Models;
 
 namespace MediLaboNote
 {
@@ -7,9 +10,20 @@ namespace MediLaboNote
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
+
+            // add MongoDB
+            builder.Services.Configure<MongoDbSettings>(
+                builder.Configuration.GetSection("MongoDbSettings"));
+            builder.Services.AddSingleton<IMongoClient>(s =>
+                new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
+            builder.Services.AddScoped<INoteRepository, NoteRepository>();
+
+            builder.Services.AddHttpClient("MediLabo", client =>
+            {
+                client.BaseAddress = new Uri("http://medilabo.api:8080");
+            });
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -19,6 +33,15 @@ namespace MediLaboNote
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
+                using (var scope = app.Services.CreateScope())
+                {
+                    //MongoDB part
+                    var mongoClient = scope.ServiceProvider.GetRequiredService<IMongoClient>();
+                    var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
+                    var database = mongoClient.GetDatabase(mongoDbSettings.DatabaseName);
+
+                    SeedData.InitializeMongoNote(database);//Mongo
+                }
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
