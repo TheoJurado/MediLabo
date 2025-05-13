@@ -12,9 +12,9 @@ namespace MediLaboNote.Data
             Console.WriteLine("notes colectées");
             var patientCollection = database.GetCollection<PatientDto>("Patients");
             Console.WriteLine("patients colectés");
-            return;
+            //return;
 
-            if (!NoteCollection.Find(_ => true).Any())
+            if (patientCollection.Find(_ => true).Any())
             {
                 Console.WriteLine("analyse des patients");
                 //recover all default Patients

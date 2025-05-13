@@ -53,6 +53,8 @@ namespace MediLabo.Data
                 };
                 patientCollection.InsertMany(patients);
             }
+
+            Console.WriteLine("SeedData: fin de l'initialisation des patients");
         }
 
     }
