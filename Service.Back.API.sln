@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthService", "AuthService\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Frontend", "Frontend\Frontend.csproj", "{EFAB0D95-CD51-4133-862F-DADBA84E4884}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediLaboNote", "MediLaboNote\MediLaboNote.csproj", "{98F72873-16E5-43C6-A7EB-4901CB9538A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MediLaboNote", "MediLaboNote\MediLaboNote.csproj", "{98F72873-16E5-43C6-A7EB-4901CB9538A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediNote", "MediNote\MediNote.csproj", "{3FEDB14E-A242-4467-A803-A44AA7BD7AEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{98F72873-16E5-43C6-A7EB-4901CB9538A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98F72873-16E5-43C6-A7EB-4901CB9538A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98F72873-16E5-43C6-A7EB-4901CB9538A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FEDB14E-A242-4467-A803-A44AA7BD7AEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FEDB14E-A242-4467-A803-A44AA7BD7AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FEDB14E-A242-4467-A803-A44AA7BD7AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FEDB14E-A242-4467-A803-A44AA7BD7AEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

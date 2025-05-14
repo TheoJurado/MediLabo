@@ -47,6 +47,18 @@
       ],
       "UpstreamPathTemplate": "/medilabonotes/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medinote.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medinote/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],
   "GlobalConfiguration": {
