@@ -1,6 +1,6 @@
 using MediLaboNote.Data;
-using MongoDB.Driver;
 using MediLaboNote.Models;
+using MongoDB.Driver;
 
 namespace MediLaboNote
 {
@@ -11,6 +11,7 @@ namespace MediLaboNote
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+            builder.Services.AddHttpClient();
 
             // add MongoDB
             builder.Services.Configure<MongoDbSettings>(
@@ -19,10 +20,6 @@ namespace MediLaboNote
                 new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
             builder.Services.AddScoped<INoteRepository, NoteRepository>();
 
-            builder.Services.AddHttpClient("MediLabo", client =>
-            {
-                client.BaseAddress = new Uri("http://medilabo.api:8080");
-            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

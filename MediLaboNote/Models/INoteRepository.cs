@@ -1,9 +1,9 @@
-﻿using MongoDB.Driver;
-
-namespace MediLaboNote.Models
+﻿namespace MediLaboNote.Models
 {
     public interface INoteRepository
     {
+        public Task<IEnumerable<Note>> GetAllNotesAsync();
+
         public Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(string patientId);
 
         public Task<Note?> GetNoteById(string id);

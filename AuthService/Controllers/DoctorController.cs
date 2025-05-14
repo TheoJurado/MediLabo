@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace AuthService.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("authapi/[controller]")]
     public class DoctorController : ControllerBase
     {
         private readonly UserManager<Doctor> _userManager;

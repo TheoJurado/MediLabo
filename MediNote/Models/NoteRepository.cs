@@ -14,6 +14,13 @@ namespace MediNote.Models
             _notes = database.GetCollection<Note>("Notes");
         }
 
+        public async Task<IEnumerable<Note>> GetAllNotesAsync()
+        {
+            var allNotes = await _notes.Find(n => true).ToListAsync();
+
+            return allNotes;
+        }
+
         public async Task<IEnumerable<Note>> GetAllNotesFromPatientByHisId(string patientId)
         {
             var filter = Builders<Note>.Filter.Eq(n => n.PatientId, patientId);

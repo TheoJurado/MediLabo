@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MediLabo.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("patientapi/[controller]")]
     public class PatientsController : ControllerBase
     {
         private readonly IPatientRepository _patientRepository;
@@ -15,7 +15,7 @@ namespace MediLabo.Controllers
             _patientRepository = patientRepository;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Patient>>> GetAllPatients()
         {
             var patients = await _patientRepository.GetAllPatientAsync();

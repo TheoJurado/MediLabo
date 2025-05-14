@@ -5,7 +5,7 @@ namespace MediNote.Data
 {
     public class SeedData
     {
-        public static void InitializeMongoNotes(IMongoDatabase database)
+        public static void InitializeMongoNote(IMongoDatabase database)
         {
             Console.WriteLine("SeedData: Démarrage de l'initialisation des notes");
             var NoteCollection = database.GetCollection<Note>("Notes");
@@ -32,7 +32,7 @@ namespace MediNote.Data
                 }
 
                 Console.WriteLine("recherche des notes");
-                if(!NoteCollection.Find(_ => true).Any())
+                if (!NoteCollection.Find(_ => true).Any())
                 {
                     Console.WriteLine("Note absente > création des notes");
                     //Adding default notes

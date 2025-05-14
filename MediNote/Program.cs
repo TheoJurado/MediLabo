@@ -1,4 +1,3 @@
-
 using MediNote.Data;
 using MediNote.Models;
 using MongoDB.Driver;
@@ -12,6 +11,7 @@ namespace MediNote
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
+            builder.Services.AddHttpClient();
 
             // add MongoDB
             builder.Services.Configure<MongoDbSettings>(
@@ -37,7 +37,7 @@ namespace MediNote
                     var mongoDbSettings = builder.Configuration.GetSection("MongoDbSettings").Get<MongoDbSettings>();
                     var database = mongoClient.GetDatabase(mongoDbSettings.DatabaseName);
 
-                    SeedData.InitializeMongoNotes(database);//Mongo
+                    SeedData.InitializeMongoNote(database);//Mongo
                 }
                 app.UseSwagger();
                 app.UseSwaggerUI();

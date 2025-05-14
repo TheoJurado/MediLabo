@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MediLaboNote.Models;
+using MediNote.Models;
 using System.Net.Http;
 
-namespace MediLaboNote.Controllers
+namespace MediNote.Controllers
 {
     [ApiController]
-    [Route("medilabonoteapi/[controller]")]
+    [Route("noteapi/[controller]")]
     public class NotesController : ControllerBase
     {
         private readonly INoteRepository _noteRepository;

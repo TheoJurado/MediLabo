@@ -24,19 +24,38 @@ namespace Frontend.Pages
                 Doctors = await doctorResponse.Content.ReadFromJsonAsync<List<DoctorDto>>();
             }
 
-            var patientResponse = await _httpClient.GetAsync("/medilabo/patients");
+            var patientResponse = await _httpClient.GetAsync("/medilabo/patients/all");
             if (patientResponse.IsSuccessStatusCode)
             {
                 Patients = await patientResponse.Content.ReadFromJsonAsync<List<PatientDto>>();
             }
-
-            var noteResponse = await _httpClient.GetAsync("/medilabonotes/notes");
-            if (noteResponse.IsSuccessStatusCode)
+            /*
+            var labonoteResponse = await _httpClient.GetAsync("/medilabonotes/notes");
+            if (labonoteResponse.IsSuccessStatusCode)
             {
-                Notes = await noteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
+                /*Notes = await labonoteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
+            }*/
+
+            var medinoteResponse = await _httpClient.GetAsync("/medinote/notes/all");
+            if (medinoteResponse.IsSuccessStatusCode)
+            {
+                Notes = await medinoteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
             }
 
-            Console.WriteLine("!!!!!!!!!!!!!!!!!!!!!!!" + patientResponse.StatusCode + "/" + noteResponse.StatusCode);
+            Console.WriteLine("Doctor > " + doctorResponse.StatusCode);
+            Console.WriteLine("Patient > " + patientResponse.StatusCode);
+            Console.WriteLine("Notes > " + medinoteResponse.StatusCode);
+            var content = await medinoteResponse.Content.ReadAsStringAsync();
+            Console.WriteLine("Contenu de la réponse Note : " + content);
+            if (medinoteResponse.Content.Headers.ContentType?.MediaType == "application/json")
+            {
+                var jsonContent = await medinoteResponse.Content.ReadAsStringAsync();
+                Console.WriteLine("Erreur JSON : " + jsonContent);
+            }
+            foreach (var header in medinoteResponse.Headers)
+            {
+                Console.WriteLine($"{header.Key} : {string.Join(",", header.Value)}");
+            }
         }
 
         public class DoctorDto
