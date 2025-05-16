@@ -49,6 +49,18 @@
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
+      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medinote.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medinote/notes/{patientId}/note",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
       "DownstreamPathTemplate": "/noteapi/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -58,6 +70,18 @@
         }
       ],
       "UpstreamPathTemplate": "/medinote/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+    },
+    {
+      "DownstreamPathTemplate": "/riskapi/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "risk.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/riskof/{everything}",
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
   ],

@@ -1,0 +1,36 @@
+﻿@page
+@model Frontend.Pages.PatientListModel
+@{
+    ViewData["Title"] = "Liste des Patients";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1>Liste des Patients</h1>
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date de Naissance</th>
+            <th>Genre</th>
+            <th>Adresse</th>
+            <th>Téléphone</th>
+            <th>Risque</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var patient in Model.Patients)
+        {
+            <tr onclick="window.location.href='@Url.Page("/PatientNote", new { id = patient.Id })'" style="cursor:pointer;">
+                <td>@patient.Name</td>
+                <td>@patient.FirstName</td>
+                <td>@patient.BirthDay.ToString("dd/MM/yyyy")</td>
+                <td>@patient.GenderText</td>
+                <td>@patient.Adress</td>
+                <td>@patient.Phone</td>
+                <td>@patient.Risk</td>
+            </tr>
+        }
+    </tbody>
+</table>

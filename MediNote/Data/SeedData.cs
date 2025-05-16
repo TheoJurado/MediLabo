@@ -51,7 +51,7 @@ namespace MediNote.Data
                     new Note
                     {
                         Comment = "Le patient déclare avoir fait une réaction aux médicaments au cours des 3 derniers mois Il remarque également que son audition continue d'être anormale",
-                        PatientId = testInDanger.Id
+                        PatientId = testBorderline.Id
                     },
                     new Note
                     {

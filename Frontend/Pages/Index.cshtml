@@ -2,10 +2,6 @@
 @using Frontend.Pages
 @model IndexModel
 @{
-    if (ViewData == null)
-    {
-        throw new InvalidOperationException("ViewData est null au début de la vue !");
-    }
     ViewData["Title"] = "Dashboard";
 }
 
@@ -41,6 +37,7 @@
             <th>Adresse</th>
             <th>Téléphone</th>
             <th>Id</th>
+            <th>Risque</th>
         </tr>
     </thead>
     <tbody>
@@ -54,6 +51,7 @@
                 <td>@patient.Adress</td>
                 <td>@patient.Phone</td>
                 <td>@patient.Id</td>
+                <td>@patient.Risk</td>
             </tr>
         }
     </tbody>
@@ -77,3 +75,4 @@
         }
     </tbody>
 </table>
+<a asp-page="/PatientList">Vue normale</a>

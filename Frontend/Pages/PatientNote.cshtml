@@ -1,0 +1,117 @@
+﻿@page "{id}"
+@model Frontend.Pages.PatientNoteModel
+@{
+    ViewData["Title"] = "Notes du Patient";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1>Notes du Patient</h1>
+
+<p>@Model.Patient.Name @Model.Patient.FirstName</p>
+
+@if (Model.Notes is not null && Model.Notes.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th>Supprimer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var note in Model.Notes)
+            {
+                <tr>
+                    <td>@note.Comment</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="deleteNote('@note.Id')">X</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>Risque pour ce patient : @Model.Riskof</p>
+}
+else
+{
+    <p>Aucune note trouvée pour ce patient.</p>
+}
+
+<div class="mb-3">
+    <label for="newNote" class="form-label">Ajouter une note :</label>
+    <textarea id="newNote" class="form-control" rows="3"></textarea>
+    <button class="btn btn-primary mt-2" onclick="addNote()">Ajouter</button>
+</div>
+
+<a asp-page="/PatientList">Retour</a>
+
+@{
+    var patientIdValue = Model.Patient.Id;
+}
+@section Scripts {
+    <script>
+        //delete note
+        async function deleteNote(noteId) {
+            if (!confirm("Voulez-vous vraiment supprimer cette note ?")) return;
+
+            try {
+                const response = await fetch(`/medinote/notes/deletenotes/${noteId}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    location.reload(); // Refresh page
+                } else {
+                    alert("Échec de la suppression de la note.");
+                }
+            } catch (error) {
+                console.error("Erreur lors de la suppression :", error);
+                alert("Erreur lors de la suppression.");
+            }
+        }
+
+        const patientIdFromServer = @Html.Raw(Json.Serialize(patientIdValue)); // Sérialise JSON
+
+        //add note
+        async function addNote() {
+            const noteContent = document.getElementById("newNote").value.trim();
+            if (!noteContent) {
+                alert("La note ne peut pas être vide.");
+                return;
+            }
+
+            const currentPatientId = patientIdFromServer; //transfert patient id
+
+            if (currentPatientId === undefined || currentPatientId === null)
+            {// check currentPatientId is valide
+                alert("Erreur : L'ID du patient n'est pas disponible.");
+                console.error("L'ID du patient (patientIdFromServer) est indéfini ou null.");
+                return;
+            }
+
+            console.log("ID du patient : ", currentPatientId);
+
+            try {
+                const response = await fetch(`/medinote/notes/${currentPatientId}/note`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(noteContent)
+                });
+
+                if (response.ok) {
+                    location.reload(); // Refresh page for see the note
+                } else {
+                    const errorText = await response.text();
+                    console.error("Réponse serveur : ", response.status, errorText);
+                    alert("Erreur lors de l'ajout de la note");
+                }
+            } catch (error) {
+                console.error("Erreur lors de l'ajout :", error);
+                alert("Erreur lors de l'ajout de la note.");
+            }
+        }
+    </script>
+}
