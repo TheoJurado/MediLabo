@@ -1,0 +1,53 @@
+﻿@page "{id}"
+@model Frontend.Pages.PatientNoteModel
+@{
+    ViewData["Title"] = "Notes du Patient";
+}
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<h1>Notes du Patient</h1>
+
+<p>@Model.Patient.Name @Model.Patient.FirstName</p>
+
+@if (Model.Notes is not null && Model.Notes.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Note</th>
+                <th>Supprimer</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var note in Model.Notes)
+            {
+                <tr>
+                    <td>@note.Comment</td>
+                    <td>
+                        <form method="post" asp-page-handler="DeleteNote" asp-route-id="@Model.Patient.Id">
+                            <input type="hidden" name="NoteIdToDelete" value="@note.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">X</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>Risque pour ce patient : @Model.Riskof</p>
+}
+else
+{
+    <p>Aucune note trouvée pour ce patient.</p>
+}
+
+<form method="post" asp-page-handler="CreateNote" asp-route-id="@Model.Patient.Id">
+    <input type="hidden" name="currentPatientId" value="@Model.Patient.Id" />
+    <div class="mb-3">
+        <label for="newNote" class="form-label">Ajouter une note :</label>
+        <textarea id="newNote" name="NewNote" class="form-control" rows="3"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Ajouter</button>
+    </div>
+</form>
+
+<a asp-page="/PatientList">Retour</a>

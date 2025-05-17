@@ -1,0 +1,151 @@
+services:
+  sqlserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.sqlserver
+    container_name: sqlserver
+    environment:
+      - SA_PASSWORD=Strong!Passw0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Strong!Passw0rd", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - backend
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+
+  medilabo.api:
+    build:
+      context: ./MediLabo
+      dockerfile: Dockerfile
+    container_name: medilabo.api
+    ports:
+      - "5001:8080"
+      - "5002:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      - MongoDbSettings__DatabaseName=MedilaboDb
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+
+  medilabonote.api:
+    build:
+      context: ./MediLaboNote
+      dockerfile: Dockerfile
+    container_name: medilabonote.api
+    ports:
+      - "8082:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      - MongoDbSettings__DatabaseName=MedilaboDb
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+
+  medinote.api:
+    build:
+      context: ./MediNote
+      dockerfile: Dockerfile
+    container_name: medinote.api
+    ports:
+      - "8087:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      - MongoDbSettings__DatabaseName=MedilaboDb
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+
+  risk.api:
+    build:
+      context: ./Risk
+      dockerfile: Dockerfile
+    container_name: risk.api
+    ports:
+      - "8086:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - MongoDbSettings__ConnectionString=mongodb://mongodb:27017
+      - MongoDbSettings__DatabaseName=MedilaboDb
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - backend
+
+  authservice:
+    build:
+      context: ./AuthService
+      dockerfile: Dockerfile
+    container_name: authservice
+    ports:
+      - "7001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=AuthDb;User Id=sa;Password=Strong!Passw0rd;TrustServerCertificate=True
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - backend
+
+  frontendapp:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "5000:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - backend
+
+  gateway.ocelot:
+    build:
+      context: ./Gateway.Ocelot
+      dockerfile: Dockerfile
+    container_name: gateway.ocelot
+    ports:
+      - "6000:8080"
+      - "6001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - medilabo.api
+    networks:
+      - backend
+      
+volumes:
+  mongo_data:
+
+networks:
+  backend:

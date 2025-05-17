@@ -1,0 +1,70 @@
+﻿using MediLabo.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MediLabo.Controllers
+{
+    [ApiController]
+    [Route("patientapi/[controller]")]
+    public class PatientsController : ControllerBase
+    {
+        private readonly IPatientRepository _patientRepository;
+
+        public PatientsController(IPatientRepository patientRepository)
+        {
+            _patientRepository = patientRepository;
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<Patient>>> GetAllPatients()
+        {
+            var patients = await _patientRepository.GetAllPatientAsync();
+            return Ok(patients);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Patient>> GetPatientById(string id)
+        {
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+            return Ok(patient);
+        }
+
+        [HttpPost]
+        public ActionResult AddPatient([FromBody] Patient patient)
+        {
+            _patientRepository.AddPatient(patient);
+            return CreatedAtAction(nameof(GetPatientById), new { id = patient.Id }, patient);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePatient(string id, [FromBody] Patient updatedPatient)
+        {
+            var existingPatient = await _patientRepository.GetPatientByIdAsync(id);
+            if (existingPatient == null)
+            {
+                return NotFound();
+            }
+
+            updatedPatient.Id = id; // Make sure ID still the same
+            await _patientRepository.UpdatePatientAsync(id, updatedPatient);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeletePatient(string id)
+        {
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
+            if (patient == null)
+            {
+                return NotFound();
+            }
+
+            _patientRepository.DeletePatient(patient);
+            return NoContent();
+        }
+    }
+}

@@ -1,0 +1,6 @@
+@MediLaboNote_HostAddress = http://localhost:5203
+
+GET {{MediLaboNote_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
