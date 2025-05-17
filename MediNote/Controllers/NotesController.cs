@@ -32,16 +32,23 @@ namespace MediNote.Controllers
         }
 
         [HttpPost("{patientId}/note")]
-        public async Task<ActionResult> AddNoteToPatient(string patientId, [FromBody] string note)
+        public async Task<ActionResult> AddNoteToPatient(string patientId, [FromBody] string noteString)
         {
-            Console.WriteLine("demande de note : " +  note);
+            Console.WriteLine("demande de note : " +  noteString);
+            Console.WriteLine("note demandée par : " + patientId);
             var httpClient = _httpClientFactory.CreateClient("MediLabo");
-            var response = await httpClient.GetAsync($"/api/patients/{patientId}");
+            var response = await httpClient.GetAsync($"/medilabo/patients/{patientId}");//check if patient exist
             if (!response.IsSuccessStatusCode)
                 return NotFound($"Patient with ID {patientId} not found.");
 
-            _noteRepository.AddNoteToPatient(CreatNoteFromString(note, patientId), patientId);
+            _noteRepository.AddNoteToPatient(CreatNoteFromString(noteString, patientId), patientId);
             return Ok();
+        }
+
+        [HttpPost("stpmarche")]
+        public void testVoid([FromBody] string noteString)
+        {
+            Console.WriteLine("demande de test : " + noteString);
         }
 
         [HttpDelete("deletenotes/{noteId}")]

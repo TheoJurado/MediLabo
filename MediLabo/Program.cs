@@ -1,13 +1,6 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Identity.Abstractions;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.Resource;
 using MediLabo.Data;
 using MongoDB.Driver;
 using MediLabo.Models;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Identity;
 
 namespace MediLabo
 {

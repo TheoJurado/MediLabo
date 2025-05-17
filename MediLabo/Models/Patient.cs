@@ -13,8 +13,8 @@ namespace MediLabo.Models
         public DateTime BirthDay { get; set; }
         public GenderType Gender { get; set; } = GenderType.Other;
         public string GenderText => Gender.ToString();
-        public string Adress { get; set; } = string.Empty;
-        public string Phone { get; set; } = string.Empty;
+        public string? Adress { get; set; } = string.Empty;
+        public string? Phone { get; set; } = string.Empty;
     }
 
     public enum GenderType

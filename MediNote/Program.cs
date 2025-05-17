@@ -11,7 +11,10 @@ namespace MediNote
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllers();
-            builder.Services.AddHttpClient();
+            builder.Services.AddHttpClient("MediLabo", client =>
+            {
+                client.BaseAddress = new Uri("http://gateway.ocelot:8080"); // ou l'URL de ton API Gateway
+            });
 
             // add MongoDB
             builder.Services.Configure<MongoDbSettings>(

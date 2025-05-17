@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text;
 
 namespace Frontend.Pages
 {
@@ -35,6 +36,50 @@ namespace Frontend.Pages
             if (patientResponse.IsSuccessStatusCode)
                 Patient = await patientResponse.Content.ReadFromJsonAsync<PatientDto>();
         }
+
+        #region Note creation
+        [BindProperty]
+        public string NewNote { get; set; }
+        public async Task<IActionResult> OnPostCreateNoteAsync(string currentPatientId)
+        {
+            Console.WriteLine("OnPostCreateNoteAsync : " + currentPatientId);
+            if (!string.IsNullOrWhiteSpace(NewNote))
+            {
+                await CreateNote(currentPatientId, NewNote);
+            }
+            return RedirectToPage();
+        }
+        public async Task CreateNote(string currentPatientId, string theNote)
+        {
+            Console.WriteLine("ID client : " + currentPatientId);
+            var content = new StringContent($"\"{theNote}\"", Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync($"/medinote/notes/{currentPatientId}/note", content);
+
+            if (!response.IsSuccessStatusCode)
+            {//if error
+                throw new Exception($"Erreur lors de l'ajout de la note : {response.StatusCode}");
+            }
+        }
+        #endregion
+        #region Note destruction
+        [BindProperty]
+        public string NoteIdToDelete { get; set; }
+        public async Task<IActionResult> OnPostDeleteNoteAsync()
+        {
+            Console.WriteLine("suppression de note : " + NoteIdToDelete);
+            if (!string.IsNullOrEmpty(NoteIdToDelete))
+            {
+                var response = await _httpClient.DeleteAsync($"/medinote/notes/deletenotes/{NoteIdToDelete}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Erreur lors de la suppression de la note : {response.StatusCode}");
+                }
+            }
+
+            return RedirectToPage(); // Reload page
+        }
+        #endregion
 
 
         public class NoteDto
