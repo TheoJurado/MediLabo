@@ -20,19 +20,19 @@ namespace Frontend.Pages
         public async Task OnGetAsync(string id)
         {
             // get note
-            var medinoteResponse = await _httpClient.GetAsync($"/medinote/notes/{id}/notes");
+            var medinoteResponse = await _httpClient.GetAsync($"/medinote/notes/{id}/notes");//GetAllNoteForThisPatient(id)
             if (medinoteResponse.IsSuccessStatusCode)
             {
                 Notes = await medinoteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
             }
 
             //get risk
-            var risk = await _httpClient.GetAsync($"/riskof/risk/{id}/riskpatient");
+            var risk = await _httpClient.GetAsync($"/riskof/risk/{id}/riskpatient");//GetRiskForThisPatient(id)
             if (risk.IsSuccessStatusCode)
                 Riskof = await risk.Content.ReadAsStringAsync();
 
             //get the patient
-            var patientResponse = await _httpClient.GetAsync($"/medilabo/patients/{id}");
+            var patientResponse = await _httpClient.GetAsync($"/medilabo/patients/{id}");//GetThisPatient(id)
             if (patientResponse.IsSuccessStatusCode)
                 Patient = await patientResponse.Content.ReadFromJsonAsync<PatientDto>();
         }

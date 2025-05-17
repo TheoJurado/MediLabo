@@ -9,6 +9,7 @@
 
 
         public void AddPatient(Patient patient);
+        Task UpdatePatientAsync(string id, Patient updatedPatient);
         public void DeletePatient(Patient patient);
     }
 }

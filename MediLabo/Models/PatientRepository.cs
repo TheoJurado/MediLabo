@@ -33,6 +33,12 @@ namespace MediLabo.Models
         {
             _patients.InsertOne(patient);
         }
+
+        public async Task UpdatePatientAsync(string id, Patient updatedPatient)
+        {
+            await _patients.ReplaceOneAsync(p => p.Id == id, updatedPatient);
+        }
+
         public void DeletePatient(Patient patient) 
         {
             _patients.DeleteOne(p => p.Id == patient.Id);

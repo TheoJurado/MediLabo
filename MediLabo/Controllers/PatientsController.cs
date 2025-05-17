@@ -40,6 +40,20 @@ namespace MediLabo.Controllers
             return CreatedAtAction(nameof(GetPatientById), new { id = patient.Id }, patient);
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult> UpdatePatient(string id, [FromBody] Patient updatedPatient)
+        {
+            var existingPatient = await _patientRepository.GetPatientByIdAsync(id);
+            if (existingPatient == null)
+            {
+                return NotFound();
+            }
+
+            updatedPatient.Id = id; // Make sure ID still the same
+            await _patientRepository.UpdatePatientAsync(id, updatedPatient);
+            return NoContent();
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePatient(string id)
         {

@@ -1,12 +1,13 @@
-﻿@page "{id?}"
+﻿@page "{id}"
 @model EditPatientModel
+@using Frontend.Pages
 @{
-    ViewData["Title"] = Model.IsEditMode ? "Modifier le Patient" : "Ajouter un Patient";
+    ViewData["Title"] = "Édition du patient";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<form method="post">
+<form method="post" asp-page-handler="EditPatient" asp-route-id="@Model.Patient.Id">
     <div class="form-group">
         <label asp-for="Patient.Name"></label>
         <input asp-for="Patient.Name" class="form-control" />
@@ -45,9 +46,7 @@
         <span asp-validation-for="Patient.Phone" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary">
-        @(Model.IsEditMode ? "Mettre les informations à jour" : "Ajouter Patient")
-    </button>
+    <button type="submit" class="btn btn-primary">Mettre à jour</button>
 </form>
 
 @section Scripts {
