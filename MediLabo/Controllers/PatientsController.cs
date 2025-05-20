@@ -1,4 +1,5 @@
 ﻿using MediLabo.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,6 +34,8 @@ namespace MediLabo.Controllers
             return Ok(patient);
         }
 
+        [Authorize] // Connected
+        [Authorize(Policy = "OrganizerOnly")] // IsOrganizer
         [HttpPost]
         public ActionResult AddPatient([FromBody] Patient patient)
         {
@@ -40,6 +43,8 @@ namespace MediLabo.Controllers
             return CreatedAtAction(nameof(GetPatientById), new { id = patient.Id }, patient);
         }
 
+        [Authorize] // Connected
+        [Authorize(Policy = "OrganizerOnly")] // IsOrganizer
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePatient(string id, [FromBody] Patient updatedPatient)
         {
@@ -54,6 +59,8 @@ namespace MediLabo.Controllers
             return NoContent();
         }
 
+        [Authorize] // Connected
+        [Authorize(Policy = "OrganizerOnly")] // IsOrganizer
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeletePatient(string id)
         {

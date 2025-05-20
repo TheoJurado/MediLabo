@@ -17,7 +17,10 @@
             <th>Adresse</th>
             <th>Téléphone</th>
             <th>Risque</th>
-            <th>Actions</th>
+            @if (Model.IsUserOrganizer)
+            {
+                <th>Actions</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -31,12 +34,15 @@
                 <td>@patient.Adress</td>
                 <td>@patient.Phone</td>
                 <td>@patient.Risk</td>
-                <td>
-                    <button class="btn btn-sm btn-primary"
+                @if (Model.IsUserOrganizer)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-primary"
                             onclick="event.stopPropagation(); window.location.href='@Url.Page("/EditPatient", new { id = patient.Id })'">
                         Éditer
                     </button>
                 </td>
+                }
             </tr>
         }
     </tbody>

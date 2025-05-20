@@ -1,3 +1,4 @@
+using Frontend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text;
@@ -17,8 +18,12 @@ namespace Frontend.Pages
         public string Riskof { get; set; } = string.Empty;
         public PatientDto Patient { get; set; } = new PatientDto();
 
-        public async Task OnGetAsync(string id)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
+            //Check if connected
+            if (!HttpContext.Session.IsUserLoggedIn())
+                return RedirectToPage("/Login");
+
             // get note
             var medinoteResponse = await _httpClient.GetAsync($"/medinote/notes/{id}/notes");//GetAllNoteForThisPatient(id)
             if (medinoteResponse.IsSuccessStatusCode)
@@ -35,6 +40,8 @@ namespace Frontend.Pages
             var patientResponse = await _httpClient.GetAsync($"/medilabo/patients/{id}");//GetThisPatient(id)
             if (patientResponse.IsSuccessStatusCode)
                 Patient = await patientResponse.Content.ReadFromJsonAsync<PatientDto>();
+
+            return Page();
         }
 
         #region Note creation

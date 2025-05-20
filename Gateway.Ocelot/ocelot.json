@@ -37,19 +37,7 @@
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/medilabonoteapi/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "medilabonote.api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/medilabonotes/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note",
+      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note", //précision utile ?
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -57,7 +45,7 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/medinote/notes/{patientId}/note",
+      "UpstreamPathTemplate": "/medinote/notes/{patientId}/note", //précision utile ?
       "UpstreamHttpMethod": [ "POST" ]
     },
     {

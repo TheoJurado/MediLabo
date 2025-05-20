@@ -1,3 +1,5 @@
+using Frontend.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -8,10 +10,12 @@ namespace Frontend.Pages
     public class EditPatientModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly UserManager<DoctorDto> _userManager;
 
-        public EditPatientModel(IHttpClientFactory clientFactory)
+        public EditPatientModel(IHttpClientFactory clientFactory, UserManager<DoctorDto> userManager)
         {
             _httpClient = clientFactory.CreateClient("GatewayClient");
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -19,6 +23,13 @@ namespace Frontend.Pages
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
+            //Check if connected
+            if (!HttpContext.Session.IsUserLoggedIn())
+                return RedirectToPage("/Login");
+            var user = await _userManager.GetUserAsync(User);
+            if (user is DoctorDto doctor && !doctor.IsOrganizer)
+                return RedirectToPage("/PatientList");
+
             if (!string.IsNullOrEmpty(id))
             {
                 var patientResponse = await _httpClient.GetAsync($"/medilabo/patients/{id}");//GetThisPatient(id)

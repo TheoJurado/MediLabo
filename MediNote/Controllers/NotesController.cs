@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MediNote.Models;
 using System.Net.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MediNote.Controllers
 {
@@ -31,6 +32,7 @@ namespace MediNote.Controllers
             return Ok(notes);
         }
 
+        [Authorize] // Connected
         [HttpPost("{patientId}/note")]
         public async Task<ActionResult> AddNoteToPatient(string patientId, [FromBody] string noteString)
         {
@@ -45,12 +47,7 @@ namespace MediNote.Controllers
             return Ok();
         }
 
-        [HttpPost("stpmarche")]
-        public void testVoid([FromBody] string noteString)
-        {
-            Console.WriteLine("demande de test : " + noteString);
-        }
-
+        [Authorize] // Connected
         [HttpDelete("deletenotes/{noteId}")]
         public async Task<ActionResult> DeleteNote(string noteId)
         {
