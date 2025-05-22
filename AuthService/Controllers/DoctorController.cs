@@ -35,11 +35,12 @@ namespace AuthService.Controllers
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, dto.Password))
             {
-                Console.WriteLine("id-PW invalide ! Email : " + dto.Email + " > PW : " + dto.Password);
+                Console.WriteLine("ID-PW invalide ! Email : " + dto.Email + " > PW : " + dto.Password);
                 return Unauthorized(new { success = false });
             }
 
             var token = GenerateJwtToken(user);
+            Console.WriteLine("login succed ! Token : " + token);
             return Ok(new DoctorLoginResponseDto
             {
                 Success = true,

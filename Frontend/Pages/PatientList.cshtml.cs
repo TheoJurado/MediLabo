@@ -8,12 +8,10 @@ namespace Frontend.Pages
     public class PatientListModel : PageModel
     {
         private readonly HttpClient _httpClient;
-        private readonly UserManager<DoctorDto> _userManager;
 
-        public PatientListModel(IHttpClientFactory clientFactory, UserManager<DoctorDto> userManager)
+        public PatientListModel(IHttpClientFactory clientFactory)
         {
             _httpClient = clientFactory.CreateClient("GatewayClient");
-            _userManager = userManager;
         }
 
         public List<PatientDto> Patients { get; set; } = new();
@@ -22,14 +20,14 @@ namespace Frontend.Pages
         public bool IsUserOrganizer { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
-        {
+        {/*
             //Check if connected
             if (!HttpContext.Session.IsUserLoggedIn())
                 return RedirectToPage("/Login");
             //check if organizer
             var user = await _userManager.GetUserAsync(User);
             if (user is DoctorDto doctor)
-                IsUserOrganizer = doctor.IsOrganizer;
+                IsUserOrganizer = doctor.IsOrganizer;/**/
 
             //get all patient
             var patientResponse = await _httpClient.GetAsync("/medilabo/patients/all");

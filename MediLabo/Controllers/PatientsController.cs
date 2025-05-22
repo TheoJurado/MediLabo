@@ -19,6 +19,7 @@ namespace MediLabo.Controllers
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<Patient>>> GetAllPatients()
         {
+            Console.WriteLine("Asking for all patients");
             var patients = await _patientRepository.GetAllPatientAsync();
             return Ok(patients);
         }

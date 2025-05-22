@@ -37,7 +37,7 @@
       "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note", //précision utile ?
+      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note", //AddNoteToPatient()
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -45,8 +45,28 @@
           "Port": 8080
         }
       ],
-      "UpstreamPathTemplate": "/medinote/notes/{patientId}/note", //précision utile ?
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamPathTemplate": "/medinote/notes/{patientId}/note",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [] //empty = just a valid token is required
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/noteapi/notes/deletenotes/{noteId}", //DeleteNote()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medinote.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medinote/notes/deletenotes/{noteId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [] //empty = just a valid token is required
+      }
     },
     {
       "DownstreamPathTemplate": "/noteapi/{everything}",
@@ -58,7 +78,7 @@
         }
       ],
       "UpstreamPathTemplate": "/medinote/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "POST" ] //No ["PUT", "DELETE"] cause it's open for every one
     },
     {
       "DownstreamPathTemplate": "/riskapi/{everything}",

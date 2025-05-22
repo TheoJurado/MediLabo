@@ -19,10 +19,10 @@ namespace Frontend.Pages
         public PatientDto Patient { get; set; } = new PatientDto();
 
         public async Task<IActionResult> OnGetAsync(string id)
-        {
+        {/*
             //Check if connected
             if (!HttpContext.Session.IsUserLoggedIn())
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Login");/**/
 
             // get note
             var medinoteResponse = await _httpClient.GetAsync($"/medinote/notes/{id}/notes");//GetAllNoteForThisPatient(id)
