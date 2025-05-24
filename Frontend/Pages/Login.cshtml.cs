@@ -21,9 +21,12 @@ namespace Frontend.Pages
         public IActionResult OnGet()
         {
             //Check if connected
-            if (HttpContext.Session.IsUserLoggedIn())
+            var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
+            if (!string.IsNullOrEmpty(_userToken))
+            {//if already connected, go to patient list
                 return RedirectToPage("/PatientList");
-
+            }
+            
             return Page();
         }
         /////////////////////////////////////////////////
@@ -86,7 +89,5 @@ namespace Frontend.Pages
             }
             return Page();
         }
-
-
     }
 }

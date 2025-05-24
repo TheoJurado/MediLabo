@@ -12,10 +12,12 @@ namespace Frontend.Pages
     public class IndexModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public IndexModel(IHttpClientFactory clientFactory)
+        public IndexModel(IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = clientFactory.CreateClient("GatewayClient");
+            _httpContextAccessor = httpContextAccessor;
         }
 
         //part all data
@@ -54,14 +56,18 @@ namespace Frontend.Pages
         public async Task<IActionResult> OnGetAsync()
         {
             await LoadAllDataAsync();
-            /*
-            //Check if connected
-            if (HttpContext.Session.IsUserLoggedIn())
-                return RedirectToPage("/PatientList");
-            else
-                return RedirectToPage("/Login");/**/
 
-            return Page();
+            //Check if connected
+            var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
+            if (!string.IsNullOrEmpty(_userToken))
+            {//if already connected, go to patient list
+                return RedirectToPage("/PatientList");
+            }
+            else
+                return RedirectToPage("/Login");
+            /**/
+
+            //return Page();
         }
     }
 }

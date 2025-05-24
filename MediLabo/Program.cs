@@ -2,12 +2,15 @@ using MediLabo.Data;
 using MongoDB.Driver;
 using MediLabo.Models;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Identity.Web;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace MediLabo
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -20,20 +23,41 @@ namespace MediLabo
                 new MongoClient(builder.Configuration.GetSection("MongoDbSettings")["ConnectionString"]));
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
-            //add authentification
-            builder.Services.AddAuthentication("Bearer")
-                .AddJwtBearer("Bearer", options =>
+
+            //add authentification JWT
+            // JwtSettings
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+            var secretKey = jwtSettings["SecretKey"];
+            var issuer = jwtSettings["Issuer"];
+            var audience = jwtSettings["Audience"];
+
+            // Add authentification services
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options => // Use défault "Bearer"
+            {
+                options.RequireHttpsMetadata = false; // Set to true when product
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    options.Authority = "https://authservice:8080";
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = false
-                    };
-                });
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+
             builder.Services.AddAuthorization(options =>
             {
                 options.AddPolicy("OrganizerOnly", policy =>
-                    policy.RequireClaim("IsOrganizer", "true"));
+                    policy.RequireAuthenticatedUser()
+                    .RequireClaim("scope", "organizer_access"));
             });
 
 
@@ -60,6 +84,7 @@ namespace MediLabo
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

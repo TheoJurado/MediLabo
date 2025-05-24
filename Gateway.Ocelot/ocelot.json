@@ -25,6 +25,54 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
+      "DownstreamPathTemplate": "/patientapi/patients/add", //AddPatient()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabo.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabo/patients/add",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [ "organizer_access" ] //if IsOrganizer is true
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/patientapi/patients/{id}", //UpdatePatient()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabo.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabo/patients/{id}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [ "organizer_access" ] //if IsOrganizer is true
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/patientapi/patients/{id}", //DeletePatient()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabo.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabo/patients/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [ "organizer_access" ] //if IsOrganizer is true
+      }
+    },
+    {
       "DownstreamPathTemplate": "/patientapi/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -34,7 +82,7 @@
         }
       ],
       "UpstreamPathTemplate": "/medilabo/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET" ] //No ["POST", "PUT", "DELETE"] cause it's open for every one
     },
     {
       "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note", //AddNoteToPatient()
@@ -78,7 +126,7 @@
         }
       ],
       "UpstreamPathTemplate": "/medinote/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST" ] //No ["PUT", "DELETE"] cause it's open for every one
+      "UpstreamHttpMethod": [ "GET", "PUT" ] //No ["POST", "DELETE"] cause it's open for every one
     },
     {
       "DownstreamPathTemplate": "/riskapi/{everything}",

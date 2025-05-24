@@ -51,14 +51,20 @@ namespace AuthService.Controllers
 
         private string GenerateJwtToken(Doctor user)
         {
+            Console.WriteLine($"Generating token for user: {user.Email}, IsOrganizer: {user.IsOrganizer}");
             var jwtSettings = _configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("IsOrganizer", user.IsOrganizer.ToString().ToLower())
             };
+            if (user.IsOrganizer)
+            {
+                claims.Add(new Claim("scope", "organizer_access"));
+                Console.WriteLine($"Added organizer_access scope for user: {user.Email}");
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
