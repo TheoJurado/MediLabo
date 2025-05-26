@@ -50,41 +50,6 @@ namespace MediLabo.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> UpdatePatient(string id, [FromBody] Patient updatedPatient)
         {
-            Console.WriteLine("--- User Claims in UpdatePatient ---");
-            if (User?.Claims != null)
-            {
-                foreach (var claim in User.Claims)
-                {
-                    Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}, Issuer: {claim.Issuer}, OriginalIssuer: {claim.OriginalIssuer}, ValueType: {claim.ValueType}");
-                }
-            }
-            else
-            {
-                Console.WriteLine("User.Claims is null or User is null.");
-            }
-            Console.WriteLine("------------------------------------");
-            // Vérification manuelle (pour votre compréhension)
-            bool hasClaimDirectly = User.HasClaim("scope", "organizer_access");
-            Console.WriteLine($"User.HasClaim(\"scope\", \"organizer_access\"): {hasClaimDirectly}");
-
-            bool hasClaimWithTypeOnly = User.Claims.Any(c => c.Type == "scope");
-            Console.WriteLine($"User has any claim with type 'scope': {hasClaimWithTypeOnly}");
-
-            if (hasClaimWithTypeOnly)
-            {
-                var scopeClaims = User.Claims.Where(c => c.Type == "scope").ToList();
-                foreach (var sc in scopeClaims)
-                {
-                    Console.WriteLine($"Found scope claim - Value: '{sc.Value}' (Length: {sc.Value.Length}), Is 'organizer_access'?: {sc.Value == "organizer_access"}");
-                    // Parfois, des espaces invisibles peuvent causer des problèmes
-                    if (sc.Value != "organizer_access")
-                    {
-                        Console.WriteLine($"Value is not 'organizer_access'. Hex: {BitConverter.ToString(Encoding.UTF8.GetBytes(sc.Value))}");
-                    }
-                }
-            }
-            //End of Logs
-
             var existingPatient = await _patientRepository.GetPatientByIdAsync(id);
             if (existingPatient == null)
             {
