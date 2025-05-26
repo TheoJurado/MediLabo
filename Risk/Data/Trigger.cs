@@ -1,8 +1,10 @@
-﻿namespace Risk.Data
+﻿using System.Text.Json;
+
+namespace Risk.Data
 {
     public static class Trigger
     {
-        public static List<string> allTriggers = new List<string>()
+        public static List<string> AllTriggers = new List<string>()
         {
             "Hémoglobine A1C",
             "Microalbumine",
@@ -15,6 +17,6 @@
             "Rechute",
             "Réaction",
             "Anticorps"
-        };
+        };/**/
     }
 }

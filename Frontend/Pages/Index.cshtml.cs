@@ -20,43 +20,8 @@ namespace Frontend.Pages
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //part all data
-        public List<DoctorDto> Doctors { get; set; } = new();
-        public List<PatientDto> Patients { get; set; } = new();
-        public List<NoteDto> Notes { get; set; } = new();
-
-        public async Task LoadAllDataAsync()
-        {
-            var doctorResponse = await _httpClient.GetAsync("/auth/doctor/all");//GetAllDoctor()
-            if (doctorResponse.IsSuccessStatusCode)
-            {
-                Doctors = await doctorResponse.Content.ReadFromJsonAsync<List<DoctorDto>>();
-            }
-
-            var patientResponse = await _httpClient.GetAsync("/medilabo/patients/all");//GetAllPatient()
-            if (patientResponse.IsSuccessStatusCode)
-            {
-                Patients = await patientResponse.Content.ReadFromJsonAsync<List<PatientDto>>();
-                if (Patients != null)
-                    foreach (PatientDto patient in Patients)
-                    {
-                        var risk = await _httpClient.GetAsync($"/riskof/risk/{patient.Id}/riskpatient");//GetRiskOfThisPatient()
-                        if (risk.IsSuccessStatusCode)
-                            patient.Risk = await risk.Content.ReadAsStringAsync();
-                    }
-            }
-
-            var medinoteResponse = await _httpClient.GetAsync("/medinote/notes/all");//GetAllNotes()
-            if (medinoteResponse.IsSuccessStatusCode)
-            {
-                Notes = await medinoteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
-            }
-        }
-
         public async Task<IActionResult> OnGetAsync()
         {
-            await LoadAllDataAsync();
-
             //Check if connected
             var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
             if (!string.IsNullOrEmpty(_userToken))
@@ -65,9 +30,6 @@ namespace Frontend.Pages
             }
             else
                 return RedirectToPage("/Login");
-            /**/
-
-            //return Page();
         }
     }
 }
