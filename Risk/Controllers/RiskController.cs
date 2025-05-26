@@ -91,14 +91,14 @@ namespace Risk.Controllers
         {
             // Initialize a dictionary where each keyword in triggerSearch is a key, initialized to false (not found)
             Dictionary<string, bool> resultDictionary = new Dictionary<string, bool>();
-            foreach (string trigger in Trigger.allTriggers)
+            foreach (string trigger in Trigger.AllTriggers)
             {
                 resultDictionary[trigger] = false;
             }
             
             foreach (string note in notes)
             {
-                foreach (string trigger in Trigger.allTriggers)
+                foreach (string trigger in Trigger.AllTriggers)
                 {//foreach note, check if any trigger is in
                     if (note.Contains(trigger, StringComparison.OrdinalIgnoreCase)) //HELLO = hello
                     {

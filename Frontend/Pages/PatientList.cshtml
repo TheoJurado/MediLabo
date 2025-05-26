@@ -2,6 +2,7 @@
 @model Frontend.Pages.PatientListModel
 @{
     ViewData["Title"] = "Liste des Patients";
+    var IsOrganizer = HttpContext.Session.GetString("IsOrganizer") == "true";
 }
 
 <link rel="stylesheet" href="~/css/dashboard.css" />
@@ -17,7 +18,10 @@
             <th>Adresse</th>
             <th>Téléphone</th>
             <th>Risque</th>
-            <th>Actions</th>
+            @if (IsOrganizer)
+            {
+                <th>Actions</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -31,12 +35,15 @@
                 <td>@patient.Adress</td>
                 <td>@patient.Phone</td>
                 <td>@patient.Risk</td>
-                <td>
-                    <button class="btn btn-sm btn-primary"
+                @if (IsOrganizer)
+                {
+                    <td>
+                        <button class="btn btn-sm btn-primary"
                             onclick="event.stopPropagation(); window.location.href='@Url.Page("/EditPatient", new { id = patient.Id })'">
                         Éditer
                     </button>
                 </td>
+                }
             </tr>
         }
     </tbody>

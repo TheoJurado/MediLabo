@@ -1,22 +1,35 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Frontend.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Frontend.Pages
 {
     public class PatientListModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PatientListModel(IHttpClientFactory clientFactory)
+        public PatientListModel(IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = clientFactory.CreateClient("GatewayClient");
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public List<PatientDto> Patients { get; set; } = new();
         public List<NoteDto> Notes { get; set; } = new();
+        public string ErrorMessage { get; set; }
+        public bool IsUserOrganizer { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
+            //Check if connected
+            var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
+            if (string.IsNullOrEmpty(_userToken))
+            {//if not connected, go to connection page
+                return RedirectToPage("/Login");
+            }
+
             //get all patient
             var patientResponse = await _httpClient.GetAsync("/medilabo/patients/all");
             if (patientResponse.IsSuccessStatusCode)
@@ -30,6 +43,12 @@ namespace Frontend.Pages
                             patient.Risk = await risk.Content.ReadAsStringAsync();
                     }
             }
+            else
+            {
+                ErrorMessage = "Impossible de charger les patients.";
+            }
+
+            return Page();
         }
 
 

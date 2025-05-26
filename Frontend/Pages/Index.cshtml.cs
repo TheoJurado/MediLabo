@@ -1,71 +1,35 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using Frontend.Models;
+using Microsoft.AspNetCore.Http;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Frontend.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public IndexModel(IHttpClientFactory clientFactory)
+        public IndexModel(IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = clientFactory.CreateClient("GatewayClient");
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public List<DoctorDto> Doctors { get; set; } = new();
-        public List<PatientDto> Patients { get; set; } = new();
-        public List<NoteDto> Notes { get; set; } = new();
-
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            var doctorResponse = await _httpClient.GetAsync("/auth/doctor/all");
-            if (doctorResponse.IsSuccessStatusCode)
-            {
-                Doctors = await doctorResponse.Content.ReadFromJsonAsync<List<DoctorDto>>();
+            //Check if connected
+            var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
+            if (!string.IsNullOrEmpty(_userToken))
+            {//if already connected, go to patient list
+                return RedirectToPage("/PatientList");
             }
-
-            var patientResponse = await _httpClient.GetAsync("/medilabo/patients/all");
-            if (patientResponse.IsSuccessStatusCode)
-            {
-                Patients = await patientResponse.Content.ReadFromJsonAsync<List<PatientDto>>();
-                if (Patients != null)
-                    foreach (PatientDto patient in Patients)
-                    {
-                        var risk = await _httpClient.GetAsync($"/riskof/risk/{patient.Id}/riskpatient");
-                        if (risk.IsSuccessStatusCode)
-                            patient.Risk = await risk.Content.ReadAsStringAsync();
-                    }
-            }
-
-            var medinoteResponse = await _httpClient.GetAsync("/medinote/notes/all");
-            if (medinoteResponse.IsSuccessStatusCode)
-            {
-                Notes = await medinoteResponse.Content.ReadFromJsonAsync<List<NoteDto>>();
-            }
-        }
-
-        public class DoctorDto
-        {
-            public string Email { get; set; }
-            public bool IsOrganizer { get; set; }
-        }
-
-        public class PatientDto
-        {
-            public string Name { get; set; }
-            public string FirstName { get; set; }
-            public DateTime BirthDay { get; set; }
-            public string GenderText { get; set; }
-            public string Adress { get; set; }
-            public string Phone { get; set; }
-            public string Id { get; set; }
-            public string Risk { get; set; }
-        }
-
-        public class NoteDto
-        {
-            public string Comment { get; set; }
-            public string PatientId { get; set; }
+            else
+                return RedirectToPage("/Login");
         }
     }
 }

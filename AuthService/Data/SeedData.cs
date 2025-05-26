@@ -12,6 +12,7 @@ namespace AuthService.Data
     {
         public static async Task InitializeSQL(IServiceProvider serviceProvider)
         {
+            Console.WriteLine("SeedData : Note started");
             using var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
             var doctorManager = serviceProvider.GetRequiredService<UserManager<Doctor>>();

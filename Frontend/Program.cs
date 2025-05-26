@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Identity;
+using Frontend.Models;
+
 namespace Frontend
 {
     public class Program
@@ -11,6 +14,8 @@ namespace Frontend
             {
                 client.BaseAddress = new Uri("http://gateway.ocelot:8080");
             });
+            builder.Services.AddSession();
+            builder.Services.AddHttpContextAccessor();
 
             var app = builder.Build();
 
@@ -26,7 +31,9 @@ namespace Frontend
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseSession();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();

@@ -1,17 +1,24 @@
+using Frontend.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace Frontend.Pages
 {
     public class EditPatientModel : PageModel
     {
         private readonly HttpClient _httpClient;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public EditPatientModel(IHttpClientFactory clientFactory)
+        public EditPatientModel(IHttpClientFactory clientFactory, IHttpContextAccessor httpContextAccessor)
         {
             _httpClient = clientFactory.CreateClient("GatewayClient");
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [BindProperty]
@@ -19,6 +26,15 @@ namespace Frontend.Pages
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
+            //Check if connected
+            var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
+            if (string.IsNullOrEmpty(_userToken))
+                return RedirectToPage("/Login");//if not connected, go to connection page
+            var isOrganizer = _httpContextAccessor.HttpContext.Session.GetString("IsOrganizer");
+            if (isOrganizer != "true")
+                return RedirectToPage("/PatientList");//if not an organizator, go to PatientList
+
+
             if (!string.IsNullOrEmpty(id))
             {
                 var patientResponse = await _httpClient.GetAsync($"/medilabo/patients/{id}");//GetThisPatient(id)
@@ -35,20 +51,39 @@ namespace Frontend.Pages
         public async Task<IActionResult> OnPostEditPatientAsync(string id)
         {
             Console.WriteLine("OnPostEditPatientAsync started");
-            Console.WriteLine("Patient ID : " + id);
-            Console.WriteLine("Patient name : " + Patient.Name);
+            Console.WriteLine("Patient ID     : " + id);
+            Console.WriteLine("Patient name   : " + Patient.Name);
             Console.WriteLine("Patient adress : " + Patient.Adress);
+            //get token
+            var _userToken = _httpContextAccessor.HttpContext.Session.GetString("JWToken");
+            if (string.IsNullOrEmpty(_userToken))
+                throw new InvalidOperationException("Utilisateur non authentifié ou token manquant.");
+            Console.WriteLine("UserToken : " + _userToken);
+
+            //check model
             if (!ModelState.IsValid)
                 return Page();
+            Console.WriteLine("Model is valid");
 
-            var response = await _httpClient.PutAsJsonAsync($"/medilabo/patients/{id}", Patient);//UpdatePatient(id, updatedPatient)
 
-            if (!response.IsSuccessStatusCode)
+            var jsonPatient = JsonSerializer.Serialize(Patient);
+            var content = new StringContent(jsonPatient, Encoding.UTF8, "application/json");
+
+            using (var requestMessage = new HttpRequestMessage(HttpMethod.Put, $"/medilabo/patients/{id}"))//UpdatePatient(id, updatedPatient)
             {
-                ModelState.AddModelError("", "Échec de la mise à jour du patient.");
-                return Page();
-            }
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _userToken);
+                requestMessage.Content = content;
 
+                var response = await _httpClient.SendAsync(requestMessage);
+
+                if (!response.IsSuccessStatusCode)
+                {//if error
+                    Console.WriteLine("response is bad");
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                    throw new Exception($"Erreur lors de la mise a jour du patient : {response.StatusCode}, Details: {errorContent}");
+                }
+            }
+            Console.WriteLine("response is god");
 
             return RedirectToPage("/PatientList"); // Return to Patient List
         }

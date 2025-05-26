@@ -25,6 +25,54 @@
       "UpstreamHttpMethod": [ "GET" ]
     },
     {
+      "DownstreamPathTemplate": "/patientapi/patients/add", //AddPatient()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabo.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabo/patients/add",
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [ "organizer_access" ] //if IsOrganizer is true
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/patientapi/patients/{id}", //UpdatePatient()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabo.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabo/patients/{id}",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [ "organizer_access" ] //if IsOrganizer is true
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/patientapi/patients/{id}", //DeletePatient()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medilabo.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medilabo/patients/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [ "organizer_access" ] //if IsOrganizer is true
+      }
+    },
+    {
       "DownstreamPathTemplate": "/patientapi/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -34,22 +82,10 @@
         }
       ],
       "UpstreamPathTemplate": "/medilabo/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET" ] //No ["POST", "PUT", "DELETE"] cause it's open for every one
     },
     {
-      "DownstreamPathTemplate": "/medilabonoteapi/{everything}",
-      "DownstreamScheme": "http",
-      "DownstreamHostAndPorts": [
-        {
-          "Host": "medilabonote.api",
-          "Port": 8080
-        }
-      ],
-      "UpstreamPathTemplate": "/medilabonotes/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
-    },
-    {
-      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note",
+      "DownstreamPathTemplate": "/noteapi/notes/{patientId}/note", //AddNoteToPatient()
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -58,7 +94,27 @@
         }
       ],
       "UpstreamPathTemplate": "/medinote/notes/{patientId}/note",
-      "UpstreamHttpMethod": [ "POST" ]
+      "UpstreamHttpMethod": [ "POST" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [] //empty = just a valid token is required
+      }
+    },
+    {
+      "DownstreamPathTemplate": "/noteapi/notes/deletenotes/{noteId}", //DeleteNote()
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "medinote.api",
+          "Port": 8080
+        }
+      ],
+      "UpstreamPathTemplate": "/medinote/notes/deletenotes/{noteId}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer", //protection by Ocelot for logged user
+        "AllowedScopes": [] //empty = just a valid token is required
+      }
     },
     {
       "DownstreamPathTemplate": "/noteapi/{everything}",
@@ -70,7 +126,7 @@
         }
       ],
       "UpstreamPathTemplate": "/medinote/{everything}",
-      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "PUT" ] //No ["POST", "DELETE"] cause it's open for every one
     },
     {
       "DownstreamPathTemplate": "/riskapi/{everything}",
