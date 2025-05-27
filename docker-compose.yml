@@ -11,6 +11,8 @@ services:
       - "1433:1433"
     networks:
       - backend
+    volumes:
+      - sqlserver_data:/var/opt/mssql
     healthcheck:
       test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "Strong!Passw0rd", "-Q", "SELECT 1"]
       interval: 10s
@@ -129,6 +131,7 @@ services:
       
 volumes:
   mongo_data:
+  sqlserver_data:
 
 networks:
   backend:
