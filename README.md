@@ -4,7 +4,8 @@ Les services sont conteneurisés à l’aide de Docker.
 Fonctionnalités principales :
 - Analyse automatisée des notes médicales.
 - Détection des facteurs de risque associés au diabète de type 2.
-- Service API REST pour interagir avec l'application.
+- Authentification des médecins.
+- API REST pour interagir avec l'application.
 - Architecture basée sur .NET et Docker.
 
 Le projet est composé de plusieurs microservices :
@@ -19,5 +20,5 @@ Le projet est composé de plusieurs microservices :
 Chaque service est un projet .NET isolé avec son propre Dockerfile.
 
 Installation & Lancement :
-- Clonez le dépôt : 
+- Clonez le dépôt : git clone https://github.com/TheoJurado/MediLabo.git
 - Lancez tous les services : docker-compose up --build
